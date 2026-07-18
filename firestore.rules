@@ -1,0 +1,121 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper: Check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper: Check if user owns this document
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    // Helper: Get user's farmId from their profile
+    function getUserFarmId() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.farmId;
+    }
+    
+    // Helper: Check if user is farm owner
+    function isFarmOwner(farmId) {
+      let farmDoc = get(/databases/$(database)/documents/farms/$(farmId));
+      return farmDoc != null && farmDoc.data.ownerId == request.auth.uid;
+    }
+    
+    // Helper: Check if user belongs to the same farm
+    function isSameFarm(farmId) {
+      return getUserFarmId() == farmId;
+    }
+
+    // ===== USERS COLLECTION =====
+    match /users/{userId} {
+      allow read: if true;
+      allow create: if request.auth.uid == userId || request.auth == null;
+      allow update: if isAuthenticated() && 
+        (isOwner(userId) || 
+         (resource.data.farmId != null && isFarmOwner(resource.data.farmId)));
+      allow delete: if false;
+    }
+
+    // ===== FARMS COLLECTION =====
+    match /farms/{farmId} {
+      allow read: if isAuthenticated() && isFarmOwner(farmId);
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.ownerId;
+      allow update: if isAuthenticated() && isFarmOwner(farmId);
+      allow delete: if false;
+    }
+
+    // ===== GOATS COLLECTION =====
+    match /goats/{document} {
+      allow read: if isAuthenticated() && isSameFarm(resource.data.farmId);
+      allow create: if isAuthenticated() && isSameFarm(request.resource.data.farmId);
+      allow update: if isAuthenticated() && isSameFarm(resource.data.farmId);
+      allow delete: if isAuthenticated() && isSameFarm(resource.data.farmId);
+    }
+    
+    // ===== MILK COLLECTION =====
+    match /milk/{document} {
+      allow read: if isAuthenticated() && isSameFarm(resource.data.farmId);
+      allow create: if isAuthenticated() && isSameFarm(request.resource.data.farmId);
+      allow update: if isAuthenticated() && isSameFarm(resource.data.farmId);
+      allow delete: if isAuthenticated() && isSameFarm(resource.data.farmId);
+    }
+    
+    // ===== FEED COLLECTION =====
+    match /feed/{document} {
+      allow read: if isAuthenticated() && isSameFarm(resource.data.farmId);
+      allow create: if isAuthenticated() && isSameFarm(request.resource.data.farmId);
+      allow update: if isAuthenticated() && isSameFarm(resource.data.farmId);
+      allow delete: if isAuthenticated() && isSameFarm(resource.data.farmId);
+    }
+
+    // ===== GOAT VACCINES COLLECTION (ADD THIS) =====
+    match /goatVaccines/{document} {
+      allow read: if isAuthenticated() && isSameFarm(resource.data.farmId);
+      allow create: if isAuthenticated() && isSameFarm(request.resource.data.farmId);
+      allow update: if isAuthenticated() && isSameFarm(resource.data.farmId);
+      allow delete: if isAuthenticated() && isSameFarm(resource.data.farmId);
+    }
+
+    // ===== VACCINES COLLECTION (ADD THIS) =====
+    match /vaccines/{document} {
+      allow read: if isAuthenticated() && isSameFarm(resource.data.farmId);
+      allow create: if isAuthenticated() && isSameFarm(request.resource.data.farmId);
+      allow update: if isAuthenticated() && isSameFarm(resource.data.farmId);
+      allow delete: if isAuthenticated() && isSameFarm(resource.data.farmId);
+    }
+
+    // ===== MEDICINES COLLECTION (ADD THIS) =====
+    match /medicines/{document} {
+      allow read: if isAuthenticated() && isSameFarm(resource.data.farmId);
+      allow create: if isAuthenticated() && isSameFarm(request.resource.data.farmId);
+      allow update: if isAuthenticated() && isSameFarm(resource.data.farmId);
+      allow delete: if isAuthenticated() && isSameFarm(resource.data.farmId);
+    }
+
+    // ===== PALAI PACKAGES COLLECTION (ADD THIS) =====
+    match /palaiPackages/{document} {
+      allow read: if isAuthenticated() && isSameFarm(resource.data.farmId);
+      allow create: if isAuthenticated() && isSameFarm(request.resource.data.farmId);
+      allow update: if isAuthenticated() && isSameFarm(resource.data.farmId);
+      allow delete: if isAuthenticated() && isSameFarm(resource.data.farmId);
+    }
+
+    // ===== DEFAULT RULES - FIXED =====
+    match /{collection}/{document} {
+      allow read: if isAuthenticated();
+      
+      // ✅ FIX: For create operations, check request.resource.data.farmId
+      allow create: if isAuthenticated() && 
+        isSameFarm(request.resource.data.farmId);
+      
+      // ✅ FIX: For update/delete, check existing resource.data.farmId
+      allow update: if isAuthenticated() && 
+        isSameFarm(resource.data.farmId);
+      
+      allow delete: if isAuthenticated() && 
+        isSameFarm(resource.data.farmId);
+    }
+  }
+}

@@ -1,0 +1,247 @@
+/* ============================================================
+   FILE: responsive.css
+   DESCRIPTION: Responsive breakpoints and mobile-first adjustments
+   ============================================================ */
+
+/* --- Tablet & Small Laptops (max-width: 820px) --- */
+@media (max-width: 820px) {
+  .main-content {
+    margin-left: 0;
+    padding: 12px;
+    max-width: 100%;
+  }
+
+  .panel-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .auth-card {
+    padding: 30px 24px;
+  }
+
+  .activity-feed {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Mobile Devices (max-width: 480px) --- */
+@media (max-width: 480px) {
+  .main-content {
+    padding: 8px;
+    max-width: 100%;
+  }
+
+  .panel-head h2 {
+    font-size: 0.95rem;
+  }
+
+  .desc {
+    font-size: 0.65rem;
+  }
+
+  .card {
+    padding: 10px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px;
+  }
+
+  .table-wrap {
+    border-radius: 8px;
+  }
+
+  table {
+    font-size: 0.6rem;
+    min-width: 280px;
+  }
+
+  th,
+  td {
+    padding: 5px 6px;
+  }
+
+  .pill {
+    font-size: 0.5rem;
+    padding: 1px 6px;
+  }
+
+  .activity-feed {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .activity-item {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+
+  .activity-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .activity-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .activity-content .act-title {
+    font-size: 0.7rem;
+  }
+
+  .activity-content .act-desc {
+    font-size: 0.6rem;
+  }
+
+  .activity-content .act-date {
+    font-size: 0.5rem;
+  }
+
+  .ov-num {
+    font-size: 1rem;
+  }
+
+  .ov-card {
+    padding: 8px;
+  }
+
+  .overview-grid {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 6px;
+  }
+
+  .filter-bar {
+    flex-direction: column;
+  }
+
+  .filter-bar input {
+    min-width: auto;
+  }
+
+  .auth-card {
+    padding: 24px 18px;
+  }
+
+  .auth-card h1 {
+    font-size: 1.2rem;
+  }
+}
+
+/* --- Very Small Screens (max-width: 360px) --- */
+@media (max-width: 360px) {
+  .main-content {
+    padding: 6px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-head h2 {
+    font-size: 0.85rem;
+  }
+
+  table {
+    font-size: 0.5rem;
+    min-width: 200px;
+  }
+
+  th,
+  td {
+    padding: 3px 4px;
+  }
+
+  .auth-card {
+    padding: 20px 14px;
+  }
+}
+
+/* --- Utility: Prevent Horizontal Overflow --- */
+img,
+svg,
+.table-wrap,
+.grid,
+.activity-feed,
+.overview-grid,
+.modal,
+.main-content,
+.sidebar {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ============================================================
+   RESPONSIVE MODAL FIXES
+   ============================================================ */
+
+/* --- Tablet & Below --- */
+@media (max-width: 820px) {
+  .modal-bg {
+    padding: 16px;
+  }
+
+  .modal {
+    padding: 20px 22px;
+    max-width: 92vw;
+  }
+
+  .form-grid {
+    gap: 12px;
+  }
+}
+
+/* --- Mobile --- */
+@media (max-width: 480px) {
+  .modal-bg {
+    padding: 8px;
+    align-items: flex-end;
+  }
+
+  .modal {
+    padding: 16px 14px 20px;
+    max-width: 100%;
+    max-height: 94vh;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .form-grid .field.half {
+    grid-column: 1;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .modal-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .modal h3 {
+    font-size: 0.95rem;
+  }
+}
+
+/* --- Very Small Screens --- */
+@media (max-width: 360px) {
+  .modal {
+    padding: 12px 10px 16px;
+  }
+
+  .modal h3 {
+    font-size: 0.85rem;
+  }
+}
